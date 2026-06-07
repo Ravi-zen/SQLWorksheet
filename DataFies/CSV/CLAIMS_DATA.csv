@@ -1,0 +1,4 @@
+insurance_name,insurance_number,p_name,renewal,claim_date
+star,123456789,John,2026-05-25,2025-05-25
+icici,987654321,Jane,2026-01-25,2025-01-25
+hdfc,789654321,Bob,2026-02-25,2025-02-25

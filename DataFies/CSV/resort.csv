@@ -1,0 +1,6 @@
+CustomerID,FirstName,LastName,Email,CheckInDate,CheckOutDate,RoomType,Guests
+1001,John,Doe,john.doe@example.com,2026-05-20,2026-05-25,Deluxe,2
+1002,Jane,Smith,janesmith@test.com,2026-05-21,2026-05-23,Suite,1
+A1003,Bob,Johnson,bjohnson@provider.net,2026-05-22,2026-05-28,Standard,4
+1004,Alice,Brown,abrown@example.com,2026-05-24,2026-05-26,Suite123456789,2
+1005,Charlie,Davis,cdavis@test.com,2026-05-25,2026-05-30,Standard,3
