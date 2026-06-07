@@ -1,29 +1,30 @@
 -- Create a table for json raw with single column as a 'src'.
-create table if not exists json_raw( src variant );
+create table if not exists testdb.test_schema.json_raw( src variant );
 
 -- Create a new Stage for Json
-create stage if not exists myjson;
+create stage if not exists testdb.test_schema.myjson;
 
 -- Create a File Format for Json
-create file format if not exists myjson type = json;
+create file format if not exists testdb.test_schema.myjson type = json;
 
--- -- Put command to be run on snowSQL CLI
+-- Put command to be run on snowSQL CLI
+--put file://D:\RaviData\SnowFlake\Practice\DataFiles\Json\mydata.json @testdb.test_schema.myjson;
 
 -- Copy the Json data into a table created above.
-copy into json_raw from @myjson
-file_format = myjson
+copy into testdb.test_schema.json_raw from @testdb.test_schema.myjson
+file_format = testdb.test_schema.myjson
 files = ('mydata.json.gz');
 
 
-select * from json_raw;
+select * from testdb.test_schema.json_raw;
 
 select src:device_type::string as device_type,
        src:events as events,
        src:version as version
-from json_raw;
+from testdb.test_schema.json_raw;
 
 -- The loaded data in the single column can be seperated using Lateral flatten parameter which is in the value column
-select * from json_raw, lateral flatten(input => src:events);
+select * from testdb.test_schema.json_raw, lateral flatten(input => src:events);
 
 -- use the value column and pick each following data.
 select src:device_type::string as device_type,
@@ -41,10 +42,10 @@ select src:device_type::string as device_type,
        value:vd::number        as vd,
        value:z::number         as z,
        src:version::string     as version
-from json_raw, lateral flatten(input => src:events);
+from testdb.test_schema.json_raw, lateral flatten(input => src:events);
 
 -- Flatten and extract into a final table
-create table events as 
+create table testdb.test_schema.events as 
 select src:device_type::string as device_type,
        value:f::number         as f,
        value:rv::variant       as rv,
@@ -60,30 +61,30 @@ select src:device_type::string as device_type,
        value:vd::number        as vd,
        value:z::number         as z,
        src:version::string     as version
-from json_raw, lateral flatten(input => src:events);
+from testdb.test_schema.json_raw, lateral flatten(input => src:events);
 
-select * from events;
+select * from testdb.test_schema.events;
 
 --------------------------------------
 
 -- Step 1: Create a stage to store the JSON file
-CREATE OR REPLACE STAGE json_stage;
+CREATE OR REPLACE STAGE testdb.test_schema.json_stage;
 
 -- Step 2: Upload the file to the stage (run this in SnowSQL CLI)
--- PUT file:///path/to/mydata.json @json_stage AUTO_COMPRESS=TRUE;
+-- PUT file:///path/to/mydata.json @testdb.test_schema.json_stage AUTO_COMPRESS=TRUE;
 
 -- Step 3: Load raw JSON into a VARIANT table
-CREATE OR REPLACE TABLE json_raw (src VARIANT);
+CREATE OR REPLACE TABLE testdb.test_schema.json_raw (src VARIANT);
 
-COPY INTO json_raw
-FROM @json_stage/mydata.json.gz
+COPY INTO testdb.test_schema.json_raw
+FROM @testdb.test_schema.json_stage/mydata.json.gz
 FILE_FORMAT = (TYPE = 'JSON');
 
 -- Step 4: Verify the raw load
-SELECT * FROM json_raw;
+SELECT * FROM testdb.test_schema.json_raw;
 
 -- Step 5: Flatten and extract into a final table
-CREATE OR REPLACE TABLE events AS
+CREATE OR REPLACE TABLE testdb.test_schema.events AS
 SELECT
     src:device_type::STRING   AS device_type,
     src:version::FLOAT        AS version,
@@ -100,14 +101,8 @@ SELECT
     e.value:v:TMPI::NUMBER    AS tmpi,
     e.value:vd::NUMBER        AS vd,
     e.value:z::NUMBER         AS z
-FROM json_raw,
+FROM testdb.test_schema.json_raw,
 LATERAL FLATTEN(input => src:events) e;
 
 -- Step 6: Query the final table
-SELECT * FROM events;
-
-
-
-
-
-
+SELECT * FROM testdb.test_schema.events;

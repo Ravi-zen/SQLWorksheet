@@ -10,10 +10,10 @@
 create database resort;
 
 -- Create a shema in the resort database
-create or replace schema resort_schema;
+create or replace schema resort.resort_schema;
 
 -- Step 1:- Create a table called customer_details, which can be seen within in the schema
-create or replace table customer_details(
+create or replace table resort.resort_schema.customer_details(
     CustomerID integer,
     FirstName varchar(10),
     LastName varchar(10),
@@ -24,31 +24,31 @@ create or replace table customer_details(
     Guests integer
 );
 
-select * from customer_details;
+select * from resort.resort_schema.customer_details;
 
-alter table customer_details modify column Email varchar(25);
-alter table customer_details modify column RoomType varchar(10);
+alter table resort.resort_schema.customer_details modify column Email varchar(25);
+alter table resort.resort_schema.customer_details modify column RoomType varchar(10);
 
 -- Step 2:- Create a stage called mystage, which can be seen within in the schema
-create or replace stage mystage;
+create or replace stage resort.resort_schema.mystage;
 
 -- Step 3:- Load the Data file from internal storage to mystage, with the 
 -- help of PUT command.This will work in the SnowSQL CLI.
 -- We can use the some of the parameters like OVERWRITE default false, 
 -- PARALLEL default '3' and max is '99', AUTO_COMPRESS default true
 
-PUT file://D:\RaviData\SnowFlake\Exercise\resort.csv @mystage 
+PUT file://D:\RaviData\SnowFlake\Practice\DataFiles\CSV\resort.csv @resort.resort_schema.mystage 
 overwrite=true auto_compress=false parallel=99;
 
-ls@mystage;
+ls@resort.resort_schema.mystage;
 
-rm@mystage;
+rm@resort.resort_schema.mystage;
 
 -- Step 4:- Create a file format, which can be seen within in the schema
 -- We can use the some of the parameters like skip_header default 0, 
 -- field_delimiter default ',', field_optionally_enclosed_by default '"'
 
-create or replace file format mycsv type='csv' 
+create or replace file format resort.resort_schema.mycsv type='csv' 
 skip_header=1 field_delimiter=',' field_optionally_enclosed_by='"';
 
 
@@ -58,20 +58,20 @@ skip_header=1 field_delimiter=',' field_optionally_enclosed_by='"';
 -- we have a query 'validate_mode'. If no error found simple insert to the table
 -- or provides the list of error found without inserting of any data.
 
-copy into customer_details from @mystage 
-file_format = mycsv
+copy into resort.resort_schema.customer_details from @resort.resort_schema.mystage 
+file_format = resort.resort_schema.mycsv
 files = ('resort.csv')
 VALIDATION_MODE = 'RETURN_ALL_ERRORS';
 
 
-copy into customer_details from @mystage 
-file_format = mycsv
+copy into resort.resort_schema.customer_details from @resort.resort_schema.mystage 
+file_format = resort.resort_schema.mycsv
 files = ('resort.csv')
 --on_error=continue;
 on_error=skip_file;
 
 
-truncate table customer_details;
+truncate table resort.resort_schema.customer_details;
 
 
 -- To find the copy history for a file.
@@ -112,7 +112,7 @@ set cname = 'John';
 
 select $cname;
 
-select * from customer_details where firstname = $cname;
+select * from resort.resort_schema.customer_details where firstname = $cname;
 
 unset cname;
 
@@ -120,32 +120,32 @@ select $cname;
 
 
 -- TOP
-select TOP 2 * from customer_details;
+select TOP 2 * from resort.resort_schema.customer_details;
 
-select TOP 1 firstname, lastname, email from customer_details;
+select TOP 1 firstname, lastname, email from resort.resort_schema.customer_details;
 
 
 -- LIMIT
-select * from customer_details LIMIT 2;
+select * from resort.resort_schema.customer_details LIMIT 2;
 
-select firstname, lastname, email from customer_details LIMIT 1;
+select firstname, lastname, email from resort.resort_schema.customer_details LIMIT 1;
 
 
 -- OFFSET
-select * from customer_details LIMIT 2 offset 1;
+select * from resort.resort_schema.customer_details LIMIT 2 offset 1;
 
-select firstname, lastname, email from customer_details LIMIT 1 offset 2;
+select firstname, lastname, email from resort.resort_schema.customer_details LIMIT 1 offset 2;
 
 
 -- FETCH
 
-select * from customer_details order by guests fetch 2 rows only;
+select * from resort.resort_schema.customer_details order by guests fetch 2 rows only;
 
-select * from customer_details order by guests fetch first 3 rows only;
+select * from resort.resort_schema.customer_details order by guests fetch first 3 rows only;
 -- FETCH NEXT 5 ROWS ONLY — equivalent to FIRST, fetches next 5 rows (after ORDER BY)
-select * from customer_details order by checkindate desc fetch next 5 rows only;
+select * from resort.resort_schema.customer_details order by checkindate desc fetch next 5 rows only;
 
-select * from customer_details order by guests offset 2 rows fetch first 3 rows only;
+select * from resort.resort_schema.customer_details order by guests offset 2 rows fetch first 3 rows only;
 
 
 -- TO_DATE() and DATE()
@@ -197,7 +197,7 @@ select date_trunc(week, '2026-05-21'::date);
 
 -- upper(), lower() and initcap()
 
-select upper(firstname), lower(lastname), initcap(lastname) from customer_details;
+select upper(firstname), lower(lastname), initcap(lastname) from resort.resort_schema.customer_details;
 
 
 create or replace function parse_json_value(INPUT varchar)

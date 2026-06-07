@@ -1,6 +1,6 @@
 -- User Defined Functions.
 -- Example 1:
-create or replace function addnum ( a number, b number )
+create or replace function resort.resort_schema.addnum ( a number, b number )
 returns number
 language sql
 AS
@@ -8,10 +8,10 @@ $$
     a+b
 $$;
 
-select addnum(24,0);
+select resort.resort_schema.addnum(24,0);
 
 -- Example 2:
-create or replace function stringcancatination ( a varchar, b varchar )
+create or replace function resort.resort_schema.stringcancatination ( a varchar, b varchar )
 returns varchar
 language sql
 AS
@@ -19,11 +19,11 @@ $$
     a || ' ' || b
 $$;
 
-select stringcancatination('Snow flake','is a DataWarehous.');
+select resort.resort_schema.stringcancatination('Snow flake','is a DataWarehous.');
 
 -- Example create a function that check the Ae is valid or not using Javascript without exception handling
 
-create or replace function validate_age( AGE float)
+create or replace function resort.resort_schema.validate_age( AGE float)
 returns varchar()
 language javascript
 AS
@@ -36,11 +36,11 @@ $$
     }
 $$;
 
-select validate_age( -24 );
+select resort.resort_schema.validate_age( -24 );
 
 -- Example 3: create a function that check the Ae is valid or not using Javascript  with exception handling
 
-create or replace function validate_age1( AGE float)
+create or replace function resort.resort_schema.validate_age1( AGE float)
 returns varchar()
 language javascript
 AS
@@ -58,12 +58,12 @@ $$
     }
 $$;
 
-select validate_age1( 0 );
+select resort.resort_schema.validate_age1( 0 );
 
 
 -- Example 4: The finally block always runs whether an error occurs or not — useful for cleanup, logging, or appending metadata.
 -- Try-Catch-Finally: Finally block always executes regardless of error
-create or replace function divide_numbers(N1 float, D1 float)
+create or replace function resort.resort_schema.divide_numbers(N1 float, D1 float)
 returns varchar
 language javascript
 AS
@@ -84,16 +84,16 @@ finally {
 return result;
 $$;
 
-select divide_numbers(10, 2);
-select divide_numbers(10, 0);
+select resort.resort_schema.divide_numbers(10, 2);
+select resort.resort_schema.divide_numbers(10, 0);
 
 
 -- Example 5: Here we are Adding extra amount to claim_amount column
--- using the user defined function(UDF's); DB: HEALTH_INSURANCE_DB, SCHMA: HEALTH_INSURANCE_SCHEMA
--- Table: CLAIMS_DATA
-select * from claims_data;
+-- using the user defined function(UDF's); DB: POLICY_HOLDERS_DB, SCHMA: POLICY_HOLDERS_SCHEMA
+-- Table: POLICY_HOLDERS
+select * from POLICY_HOLDERS;
 
-create or replace function extra_claim ( claim number )
+create or replace function resort.resort_schema.extra_claim ( claim number )
 returns number
 language sql
 AS
@@ -101,14 +101,14 @@ $$
     claim + 2000
 $$;
 
-select * from claims_data;
-select claim_amount,extra_claim(claim_amount) from claims_data;
-update claims_data set claim_amount = extra_claim(claim_amount);
+select * from POLICY_HOLDERS_DB.POLICY_HOLDERS_SCHEMA.POLICY_HOLDERS;
+select claim_amount, resort.resort_schema.extra_claim(claim_amount) from POLICY_HOLDERS_DB.POLICY_HOLDERS_SCHEMA.POLICY_HOLDERS;
+update POLICY_HOLDERS_DB.POLICY_HOLDERS_SCHEMA.POLICY_HOLDERS set claim_amount = resort.resort_schema.extra_claim(claim_amount);
 
 
 -- Example 6: Created a function with the case statement 
 
-create or replace function udf_bignumber( n1 float, n2 float)
+create or replace function resort.resort_schema.udf_bignumber( n1 float, n2 float)
 returns float
 AS
 $$
@@ -118,15 +118,15 @@ $$
        end
 $$;
 
-select udf_bignumber(86.9 , 32.99);
-select udf_bignumber(32.99 , 86.9);
+select resort.resort_schema.udf_bignumber(86.9 , 32.99);
+select resort.resort_schema.udf_bignumber(32.99 , 86.9);
 
-select * from claims_data;
+select * from POLICY_HOLDERS_DB.POLICY_HOLDERS_SCHEMA.POLICY_HOLDERS;
 
 
 -- Example 7: Created a function with the case statement with SQL
 
-create or replace function test_sql( n1 float)
+create or replace function resort.resort_schema.test_sql( n1 float)
 returns varchar
 language sql
 AS
@@ -138,11 +138,11 @@ $$
        end
 $$;
 
-select *,test_sql(claim_amount) from claims_data;
+select *, resort.resort_schema.test_sql(claim_amount) from POLICY_HOLDERS_DB.POLICY_HOLDERS_SCHEMA.POLICY_HOLDERS;
 
 -- Example 8: Created a function with the case statement with snowflake scripting
 
-create or replace function test_snowflake_script(n1 FLOAT)
+create or replace function resort.resort_schema.test_snowflake_script(n1 FLOAT)
 returns VARCHAR
 language SQL
 AS
@@ -157,11 +157,11 @@ BEGIN
 END;
 $$;
 
-select *,test_snowflake_script(claim_amount) from claims_data;
+select *, resort.resort_schema.test_snowflake_script(claim_amount) from POLICY_HOLDERS_DB.POLICY_HOLDERS_SCHEMA.POLICY_HOLDERS;
 
 -- Example 9: Created a function with the Nested IF statement with snowflake scripting
 
-create or replace function test_javascript(N1 FLOAT)
+create or replace function resort.resort_schema.test_javascript(N1 FLOAT)
 returns VARCHAR
 language JAVASCRIPT
 AS
@@ -176,11 +176,11 @@ $$
     }
 $$;
 
-select *,test_javascript(claim_amount) from claims_data;
+select *, resort.resort_schema.test_javascript(claim_amount) from POLICY_HOLDERS_DB.POLICY_HOLDERS_SCHEMA.POLICY_HOLDERS;
 
 
 -- Example 10: Try-Catch-Finally: Input validation with cleanup logging
-create or replace function process_patient_age(AGE float, NAME varchar)
+create or replace function resort.resort_schema.process_patient_age(AGE float, NAME varchar)
 returns varchar
 language javascript
 AS
@@ -204,13 +204,13 @@ finally {
 return status;
 $$;
 
-select process_patient_age(25, 'John');
-select process_patient_age(-5, 'Jane');
-select process_patient_age(200, 'Bob');
+select resort.resort_schema.process_patient_age(25, 'John');
+select resort.resort_schema.process_patient_age(-5, 'Jane');
+select resort.resort_schema.process_patient_age(200, 'Bob');
 
 
 -- Example 11: Try-Catch-Finally: Nested try-catch with finally in Body Mass Index calculation 
-create or replace function calculate_bmi(WEIGHT float, HEIGHT float)
+create or replace function resort.resort_schema.calculate_bmi(WEIGHT float, HEIGHT float)
 returns varchar
 language javascript
 AS
@@ -240,16 +240,16 @@ finally {
 }
 $$;
 
-select calculate_bmi(70, 1.75);
-select calculate_bmi(-10, 1.75);
-select calculate_bmi(70, 0);
+select resort.resort_schema.calculate_bmi(70, 1.75);
+select resort.resort_schema.calculate_bmi(-10, 1.75);
+select resort.resort_schema.calculate_bmi(70, 0);
 
 
 -- Example 12: Runtime errors automatically generated by JavaScript engine (caught with try-catch)
 -- These errors are NOT manually thrown — they occur naturally during execution
 
 -- Example 1: TypeError - calling a method on undefined/null
-create or replace function parse_json_value(INPUT varchar)
+create or replace function resort.resort_schema.parse_json_value(INPUT varchar)
 returns varchar
 language javascript
 AS
@@ -263,13 +263,13 @@ catch (err) {
 }
 $$;
 
-select parse_json_value('{"name": "John"}');
-select parse_json_value('{"age": 25}');
-select parse_json_value('invalid json');
+select resort.resort_schema.parse_json_value('{"name": "John"}');
+select resort.resort_schema.parse_json_value('{"age": 25}');
+select resort.resort_schema.parse_json_value('invalid json');
 
 
 -- Example 13: RangeError - invalid array length, stack overflow
-create or replace function create_array(SIZE float)
+create or replace function resort.resort_schema.create_array(SIZE float)
 returns varchar
 language javascript
 AS
@@ -283,12 +283,12 @@ catch (err) {
 }
 $$;
 
-select create_array(5);
-select create_array(-1);
+select resort.resort_schema.create_array(5);
+select resort.resort_schema.create_array(-1);
 
 
 -- Example 14: SyntaxError - invalid JSON parsing at runtime
-create or replace function extract_field(JSON_STR varchar, FIELD varchar)
+create or replace function resort.resort_schema.extract_field(JSON_STR varchar, FIELD varchar)
 returns varchar
 language javascript
 AS
@@ -305,13 +305,13 @@ catch (err) {
 }
 $$;
 
-select extract_field('{"city": "New York"}', 'city');
-select extract_field('{broken json}', 'city');
-select extract_field('{"city": "New York"}', 'state');
+select resort.resort_schema.extract_field('{"city": "New York"}', 'city');
+select resort.resort_schema.extract_field('{broken json}', 'city');
+select resort.resort_schema.extract_field('{"city": "New York"}', 'state');
 
 
 -- Example 15: URIError - malformed URI encoding
-create or replace function decode_url(URL varchar)
+create or replace function resort.resort_schema.decode_url(URL varchar)
 returns varchar
 language javascript
 AS
@@ -324,12 +324,12 @@ catch (err) {
 }
 $$;
 
-select decode_url('Hello%20World');
-select decode_url('%E0%A4%A');
+select resort.resort_schema.decode_url('Hello%20World');
+select resort.resort_schema.decode_url('%E0%A4%A');
 
 
 -- Example 16: Multiple runtime error types with error object properties
-create or replace function safe_compute(A float, B float, OPERATION varchar)
+create or replace function resort.resort_schema.safe_compute(A float, B float, OPERATION varchar)
 returns varchar
 language javascript
 AS
@@ -355,12 +355,12 @@ try {
     return "Result: " + result;
 }
 catch (err) {
-    return "Error Type: " + err.name + " | Message: " + err.message + " | Stack: " + (err.stack || "N/A")HEALTH_INSURANCE_DB.HEALTH_INSURANCE_SCHEMA.DIVIDE_NUMBERSHEALTH_INSURANCE_DB.HEALTH_INSURANCE_SCHEMA.DIVIDE_NUMBERSHEALTH_INSURANCE_DB.HEALTH_INSURANCE_SCHEMA.CREATE_ARRAY;
+    return "Error Type: " + err.name + " | Message: " + err.message + " | Stack: " + (err.stack || "N/A");
 }
 $$;
 
-select safe_compute(10, 2, 'divide');
-select safe_compute(10, 0, 'divide');
-select safe_compute(-4, 0, 'sqrt');
-select safe_compute(10, 2, 'modulus');
+select resort.resort_schema.safe_compute(10, 2, 'divide');
+select resort.resort_schema.safe_compute(10, 0, 'divide');
+select resort.resort_schema.safe_compute(-4, 0, 'sqrt');
+select resort.resort_schema.safe_compute(10, 2, 'modulus');
 

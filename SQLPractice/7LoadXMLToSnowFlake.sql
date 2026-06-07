@@ -1,28 +1,29 @@
 -- Create a table for xml raw with single column as a 'xml_data'.
-create table if not exists xml_employee( xml_data variant);
+create table if not exists testdb.test_schema.xml_employee( xml_data variant);
 
 -- Create a new Stage for xml_stage
-create stage if not exists xml_stage;
+create stage if not exists testdb.test_schema.xml_stage;
 
 -- Create a File Format for XML
-create file format if not exists xml_format type = xml;
+create file format if not exists testdb.test_schema.xml_format type = xml;
 
 -- Put command to be run on snowSQL CLI
+--put file://D:\RaviData\SnowFlake\Practice\DataFiles\XML\A_20080403_1.xml @testdb.test_schema.xml_stage;
 
 -- Copy the XML data into a table created above.
-copy into xml_employee from @xml_stage 
+copy into testdb.test_schema.xml_employee from @testdb.test_schema.xml_stage 
 file_format = xml_format
 files = ('A_20080403_1.xml.gz');
 
-select * from xml_employee;
+select * from testdb.test_schema.xml_employee;
 
-select * from xml_employee, lateral flatten(input => xml_data);
-select * from xml_employee, lateral flatten(to_array(xml_data : "$"));
+select * from testdb.test_schema.xml_employee, lateral flatten(input => xml_data);
+select * from testdb.test_schema.xml_employee, lateral flatten(to_array(xml_data : "$"));
 
-select value from xml_employee, lateral flatten(input => xml_data);
-select value from xml_employee, lateral flatten(to_array(xml_data : "$"));
+select value from testdb.test_schema.xml_employee, lateral flatten(input => xml_data);
+select value from testdb.test_schema.xml_employee, lateral flatten(to_array(xml_data : "$"));
 
-create table if not exists auction_data as
+create table if not exists testdb.test_schema.auction_data as
 select 
 xmlget(value, 'SecurityTermWeekYear'):"$"::string         as "SecurityTermWeekYear",
 xmlget(value, 'SecurityTermDayMonth'):"$"::string         as "SecurityTermDayMonth",
@@ -90,9 +91,9 @@ xmlget(value, 'AdjustedAmountCurrentlyOutstanding'):"$"::string as "AdjustedAmou
 xmlget(value, 'NLPExclusionAmount'):"$"::string           as "NLPExclusionAmount",
 xmlget(value, 'MaximumNonCompAward'):"$"::string          as "MaximumNonCompAward",
 xmlget(value, 'AdjustedAccruedInterest'):"$"::string      as "AdjustedAccruedInterest"
-from xml_employee, lateral flatten(to_array(xml_data : "$"));
+from testdb.test_schema.xml_employee, lateral flatten(to_array(xml_data : "$"));
 
 -- from xml_employee, lateral flatten(input => xml_data);
 
-select * from auction_data;
+select * from testdb.test_schema.auction_data;
 

@@ -4,6 +4,7 @@ SELECT CURRENT_REGION();
 
 -- Step 1: Create a database called 'star_insurance'
 create database star_insurance;
+
 -- Step 2: Create a schema called 'insurance_schema'
 create or replace schema star_insurance.insurance_schema;
 
@@ -40,25 +41,23 @@ create or replace table star_insurance.insurance_schema.DimCustomer (
 	CommuteDistance  varchar(50)
 );
 
-select * from dimcustomer;
-delete from dimcustomer;
+select * from star_insurance.insurance_schema.dimcustomer;
+delete from star_insurance.insurance_schema.dimcustomer;
 
--- Step 4: Create a Stage called 'MyStage'
-create or replace stage star_insurance.insurance_schema.MyStage;
+-- Step 4: Create a Stage called 'mycsv'
+create or replace stage star_insurance.insurance_schema.mycsv;
 
 -- Step 5: Create a File Format called 'MyCSV'
-create or replace file format star_insurance.insurance_schema.MyCSV type = csv skip_header = 1;
+create or replace file format star_insurance.insurance_schema.csvformat type = csv skip_header = 1;
 
 -- Step 6: PUT command will not work in the Query file
---PUT file://D:\RaviData\SnowFlake\Exercise\Dimcustomer9.csv @MyStage;
---put FILE://D:\RaviData\SnowFlake\Exercise\Dimcustomer9.csv @mystage;
+--PUT file://D:\RaviData\SnowFlake\Practice\DataFiles\CSV\Dimcustomer9.csv @mycsv;
 
-
-list@MyStage;
-ls@MyStage;
+list@star_insurance.insurance_schema.mycsv;
+ls@star_insurance.insurance_schema.mycsv;
 
 -- Step 7: COPY command will copy the data from file and insert into the table.
-copy into star_insurance.insurance_schema.dimcustomer from @MyStage file_format = mycsv;
+copy into star_insurance.insurance_schema.dimcustomer from @star_insurance.insurance_schema.mycsv file_format = csvformat;
 
 SELECT CURRENT_REGION();
 

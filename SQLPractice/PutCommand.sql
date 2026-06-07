@@ -3,14 +3,14 @@ use warehouse compute_wh;
 use database star_insurance;
 use schema insurance_schema;
 select * from DIMCUSTOMER;
-ls@mystage;
+ls@mycsv;
 
-put 'FILE://D:\\RaviData\\SnowFlake\\Exercise\\getting-started\\*.csv' @mystage;
-put 'FILE://D:\\RaviData\\SnowFlake\\Exercise\\getting-started\\*.csv' @mystage overwrite = true;
-put 'FILE://D:\\RaviData\\SnowFlake\\Exercise\\getting-started\\*.csv' @mystage overwrite = true auto_compress=false;
-put 'FILE://D:\\RaviData\\SnowFlake\\Exercise\\getting-started\\*.csv' @mystage overwrite = true auto_compress=false Parallel = 99;
-PUT 'FILE://D:/RaviData/SnowFlake/Exercise/getting-started/*.csv' @mystage OVERWRITE = TRUE;
-remove@mystage;
+put 'FILE://D:\\RaviData\\SnowFlake\\Exercise\\getting-started\\*.csv' @mycsv;
+put 'FILE://D:\\RaviData\\SnowFlake\\Exercise\\getting-started\\*.csv' @mycsv overwrite = true;
+put 'FILE://D:\\RaviData\\SnowFlake\\Exercise\\getting-started\\*.csv' @mycsv overwrite = true auto_compress=false;
+put 'FILE://D:\\RaviData\\SnowFlake\\Exercise\\getting-started\\*.csv' @mycsv overwrite = true auto_compress=false Parallel = 99;
+PUT 'FILE://D:/RaviData/SnowFlake/Exercise/getting-started/*.csv' @mycsv OVERWRITE = TRUE;
+remove@mycsv;
 
 
 
@@ -28,9 +28,10 @@ ALTER TABLE student
   address VARCHAR(150),
   pincode VARCHAR(20);
 
-put 'FILE://D:\\RaviData\\SnowFlake\\Exercise\\student.csv' @mystage overwrite = true;
+put file://D:\RaviData\SnowFlake\Practice\DataFiles\CSV\student.csv @mystage overwrite = true;
+
 select * from student;
-copy into student from @mystage
+copy into student from @mycsv
 file_format = my_csv_format
 files = ('student.csv.gz');
 
@@ -42,7 +43,7 @@ select * from table(
 );
 
 
-PUT file://D:\RaviData\SnowFlake\Exercise\resort.csv @mystage overwrite=true auto_compress=false parallel=99;
+PUT file://D:\RaviData\SnowFlake\Exercise\resort.csv @mycsv overwrite=true auto_compress=false parallel=99;
 
 
 
@@ -78,4 +79,4 @@ show schemas;
 show tables;
 
 
-put file://D:\RaviData\SnowFlake\Exercise\data.csv @MYSTAGE;
+put file://D:\RaviData\SnowFlake\Exercise\data.csv @mycsv;
